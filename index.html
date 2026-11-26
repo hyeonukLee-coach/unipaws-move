@@ -5,7 +5,7 @@
 <script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>유니포즈 운동 동작 한 가지</title>
-<meta name="description" content="망원동 유니포즈 코치가 보내 드리는 반려견 운동 동작 한 가지">
+<meta name="description" content="망원동 유니포즈 이현욱 코치가 선물하는 오늘의 동작!">
 <meta name="robots" content="noindex">
 <link rel="icon" href="logo-icon.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -350,11 +350,11 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
   <div class="giant" aria-hidden="true">hello</div>
   <div class="wrap">
     <div class="gate-card">
-      <p class="lede rise" style="--i:0">망원동 유니포즈 코치가 보내 드리는</p>
-      <h1 class="rise" style="--i:1"><span id="gate-name">운동 동작 한 가지</span></h1>
+      <p class="lede rise" style="--i:0">망원동 유니포즈 이현욱 코치가 선물하는</p>
+      <h1 class="rise" style="--i:1"><span id="gate-name">오늘의 동작!</span></h1>
       <form id="gate-form" novalidate>
         <label class="field rise" style="--i:2">
-          <span>이메일을 남겨 주시면 바로 열려요</span>
+          <span>주로 사용하는 이메일을 하나 적으면 바로 열려요.</span>
           <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required>
         </label>
         <label class="check rise" style="--i:3">
@@ -496,13 +496,13 @@ function show(id) {
 
 /* ---------- 1. email gate ---------- */
 async function loadName() {
-  if (demoMode) { $("#gate-name").textContent = DEMO.name; return; }
+  // 첫 화면 제목은 늘 "오늘의 동작!" (동작 이름은 다음 화면부터)
+  if (demoMode) return;
   if (!moveId) { $("#gate-name").textContent = "링크를 다시 확인해 주세요"; $("#gate-btn").disabled = true; return; }
   try {
     const r = await fetch(`${API_URL}?m=${encodeURIComponent(moveId)}`);
     const j = await r.json();
-    if (j.ok) $("#gate-name").textContent = j.name;
-    else { $("#gate-name").textContent = "지금은 열 수 없는 동작이에요"; $("#gate-btn").disabled = true; }
+    if (!j.ok) { $("#gate-name").textContent = "지금은 열 수 없는 동작이에요"; $("#gate-btn").disabled = true; }
   } catch (e) { /* 이름을 못 불러와도 이메일 입력은 할 수 있게 둔다 */ }
 }
 
