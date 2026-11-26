@@ -30,6 +30,13 @@
   --radius: 24px;
   --err: #B0533C;
   --ink: #1F1A17;
+  --gold: #D4A84B;
+  --gold-hi: #FFF1B8;
+  --gold-dim: rgba(212, 168, 75, .22);
+  --gold-glow: rgba(232, 190, 90, .5);
+  --f-gold: #C9A227;
+  --halo: rgba(255, 226, 140, .55);
+  --halo-core: rgba(190, 232, 160, .85);
   --green: #8FD08A;
   --green-glow: rgba(143, 208, 138, .7);
   --f-brown: #8A6446;
@@ -44,6 +51,8 @@
   --sun-sheen: rgba(255, 236, 170, .55);
   --sun-text-shadow: var(--sun-text-shadow);
 }
+@property --spin { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes goldspin { to { --spin: 360deg; } }
 html, body { background: var(--cream); }
 html, body { margin: 0; overflow-x: clip; min-height: 100%; }
 body {
@@ -71,7 +80,9 @@ button, input { font: inherit; color: inherit; }
 .screen { position: relative; z-index: 1; min-height: 100svh; display: grid; place-items: center; padding: 40px 20px 56px; }
 .wrap { width: 100%; max-width: 460px; margin: 0 auto; }
 .logo img { display: block; width: auto; height: 28px; }
-.logo { position: fixed; top: 12px; right: 16px; z-index: 5; padding: 4px 8px; border-radius: 12px; background: var(--cream); font-weight: 800; font-size: 15px; color: var(--brown); letter-spacing: -0.01em; text-decoration: none; }
+.logo:hover { transform: scale(1.06); }
+.logo:active { transform: scale(.94); }
+.logo { position: fixed; top: 12px; right: 16px; z-index: 5; padding: 4px 8px; border-radius: 14px; border: 2px solid transparent; background: linear-gradient(var(--cream), var(--cream)) padding-box, conic-gradient(from var(--spin), var(--gold-dim) 0deg, var(--gold) 50deg, var(--gold-hi) 80deg, var(--gold) 110deg, var(--gold-dim) 190deg, var(--gold-dim) 360deg) border-box; animation: goldspin 3s linear infinite; box-shadow: 0 0 14px var(--gold-glow); transition: transform .25s var(--ease-out); font-weight: 800; font-size: 15px; color: var(--brown); letter-spacing: -0.01em; text-decoration: none; }
 .giant {
   position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
   font-weight: 900; font-size: clamp(96px, 30vw, 300px); line-height: 1; letter-spacing: -0.05em;
@@ -92,15 +103,18 @@ h2 { font-size: clamp(24px, 6.5vw, 32px); font-weight: 800; }
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   border: 0; cursor: pointer; border-radius: 999px; padding: 16px 28px;
   font-weight: 800; font-size: 18px; letter-spacing: -0.01em;
-  background: var(--brown); color: var(--white); text-decoration: none;
-  box-shadow: 0 10px 24px var(--shadow);
+  --btn-bg: var(--brown); color: var(--white); text-decoration: none;
+  border: 3px solid transparent;
+  background: linear-gradient(var(--btn-bg), var(--btn-bg)) padding-box, conic-gradient(from var(--spin), var(--gold-dim) 0deg, var(--gold) 50deg, var(--gold-hi) 80deg, var(--gold) 110deg, var(--gold-dim) 190deg, var(--gold-dim) 360deg) border-box;
+  animation: goldspin 3s linear infinite;
+  box-shadow: 0 10px 24px var(--shadow), 0 0 16px var(--gold-glow);
   transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out), background-color .2s;
 }
 .btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 30px var(--shadow); }
 .btn:active { transform: scale(.97); }
 .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
-.btn.sun { background: var(--sun); color: var(--brown-ink); }
-.btn.ink { background: var(--ink); color: var(--white); }
+.btn.sun { --btn-bg: var(--sun); color: var(--brown-ink); }
+.btn.ink { --btn-bg: var(--ink); color: var(--white); }
 .btn.wide { width: 100%; }
 
 /* ---------- 1. email gate ---------- */
@@ -206,7 +220,7 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 .yc-stars { display: flex; justify-content: flex-end; color: var(--sun); font-size: 8px; line-height: 1; padding-right: 4px; }
 .yc-art {
   display: grid; place-items: center; border-radius: 4px; border: 2px solid var(--beige);
-  background: radial-gradient(circle at 50% 40%, var(--white), var(--cream-deep));
+  background: var(--brown-ink); overflow: hidden;
   font-size: clamp(28px, 9vw, 44px); line-height: 1;
 }
 .yc-text { display: block; background: var(--cream); border-radius: 4px; padding: 4px; font-size: 10px; font-weight: 700; color: var(--brown); text-align: center; }
@@ -216,10 +230,12 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
   opacity: 0; transform: translateY(6px) rotate(-4deg); transition: opacity .25s, transform .35s var(--ease-out);
 }
 @media (hover: hover) {
-  .cards.dealt .ycard:hover { transform: scale(1.1) rotate(-4deg); z-index: 2; }
+  .cards.dealt .ycard:hover { transform: scale(1.06); z-index: 2; }
   .cards.dealt .ycard:hover .yc-hint { opacity: 1; transform: none; }
 }
 .ycard:focus-visible .yc-hint { opacity: 1; transform: none; }
+.cards.dealt .ycard.press { transform: scale(.9); transition-duration: .1s; }
+.yc-art img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
 .beam {
   position: absolute; left: 15%; width: 70%; height: 140%; top: -20%; pointer-events: none; z-index: 3;
   background: linear-gradient(to top, var(--beam-soft), var(--beam) 50%, var(--beam-soft));
@@ -237,6 +253,10 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 }
 .cw-top { display: flex; align-items: center; gap: 8px; background: var(--cream); border-radius: 12px; padding: 8px 8px 8px 12px; }
 .cw-emoji { font-size: 28px; line-height: 1; }
+.cw-icon { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; flex: none; }
+.ov-head { display: flex; align-items: center; gap: 8px; margin: 20px 0 8px; padding-top: 16px; border-top: 2px dashed var(--cream-deep); font-weight: 900; font-size: 17px; color: var(--ink); }
+.ov-head:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.ov-head img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
 .cw-top h3 { margin: 0; flex: 1; font-size: 20px; font-weight: 900; letter-spacing: -0.02em; color: var(--ink); }
 .cw-close { width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--white); cursor: pointer; display: grid; place-items: center; color: var(--ink); }
 .cw-close svg { width: 18px; height: 18px; }
@@ -244,12 +264,25 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
   margin-top: 8px; background: var(--white); border-radius: 12px; padding: 20px; overflow: auto; font-size: 16px;
   border: 2px solid var(--beige);
 }
-.cw-body p { margin: 0; }
+.cw-body p, #cw-text { margin: 0; }
 
-.more { margin: 32px 0 8px; }
+.more { margin: 40px 0 16px; position: relative; isolation: isolate; }
+.more .btn { z-index: 1; }
+.more::before {
+  content: ""; position: absolute; inset: -48px -12px; z-index: -1; pointer-events: none;
+  background: conic-gradient(from var(--spin), transparent 0 18deg, var(--halo) 28deg, transparent 38deg 78deg, var(--halo) 88deg, transparent 98deg 138deg, var(--halo) 148deg, transparent 158deg 198deg, var(--halo) 208deg, transparent 218deg 258deg, var(--halo) 268deg, transparent 278deg 318deg, var(--halo) 328deg, transparent 338deg);
+  -webkit-mask: radial-gradient(closest-side, var(--ink) 25%, transparent 100%); mask: radial-gradient(closest-side, var(--ink) 25%, transparent 100%);
+  animation: goldspin 14s linear infinite;
+}
+.more::after {
+  content: ""; position: absolute; inset: -20px -8px; z-index: -1; pointer-events: none; border-radius: 999px;
+  background: radial-gradient(closest-side, var(--halo-core), transparent); filter: blur(8px);
+  animation: halo 2.4s ease-in-out infinite;
+}
+@keyframes halo { 50% { opacity: .5; transform: scale(1.06); } }
 .btn.shine {
-  width: 100%; padding: 24px 28px; font-size: 21px; background: var(--green); color: var(--ink); position: relative; overflow: hidden;
-  animation: breathe 2.4s ease-in-out infinite;
+  width: 100%; padding: 24px 28px; font-size: 21px; --btn-bg: var(--green); color: var(--ink); position: relative; overflow: hidden;
+  animation: goldspin 3s linear infinite, breathe 2.4s ease-in-out infinite;
 }
 .btn.shine::after {
   content: ""; position: absolute; inset: 0;
@@ -274,7 +307,7 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 <body>
 <noscript><p style="padding:24px">이 페이지는 자바스크립트를 켜야 볼 수 있어요.</p></noscript>
 
-<a class="logo" href="https://www.instagram.com/unipaws_training/" target="_blank" rel="noopener" aria-label="유니포즈 인스타그램">
+<a class="logo" href="https://unipaws.kr/home" target="_blank" rel="noopener" aria-label="유니포즈 홈페이지">
   <img src="logo.png" alt="unipaws" width="97" height="28" onerror="this.replaceWith(document.createTextNode('UNIPAWS'))">
 </a>
 <div class="float-layer" id="floats" aria-hidden="true"></div>
@@ -360,10 +393,10 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 <div class="cardwin-wrap" id="cardwin" hidden>
   <div class="cardwin-backdrop" data-close></div>
   <section class="cardwin" role="dialog" aria-modal="true" aria-labelledby="cw-title">
-    <header class="cw-top"><span class="cw-emoji" aria-hidden="true"></span><h3 id="cw-title"></h3>
+    <header class="cw-top"><img class="cw-icon" alt="" src="icons/card-1-explain.webp"><span class="cw-emoji" aria-hidden="true" hidden></span><h3 id="cw-title"></h3>
       <button class="cw-close" type="button" aria-label="닫기" data-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </header>
-    <div class="cw-body"><p id="cw-text"></p></div>
+    <div class="cw-body"><div id="cw-text"></div></div>
   </section>
 </div>
 
@@ -570,17 +603,20 @@ function enterVideo() {
 
 // 카드 모양: 제목마다 그림과 테두리 색
 const CARD_LOOK = {
-  "동작 설명": ["📖", "--f-brown"], "핸들링 방법": ["🖐️", "--f-blue"], "단계": ["🪜", "--f-green"],
-  "주의사항": ["⚠️", "--f-orange"], "꿀팁": ["🍯", "--f-honey"]
+  "동작 설명": ["📖", "--f-brown", "icons/card-1-explain.webp"], "핸들링 방법": ["🖐️", "--f-blue", "icons/card-2-handling.webp"],
+  "단계": ["🪜", "--f-green", "icons/card-3-steps.webp"], "주의사항": ["⚠️", "--f-orange", "icons/card-4-caution.webp"],
+  "꿀팁": ["🍯", "--f-honey", "icons/card-5-tip.webp"], "한눈에 보기!": ["📋", "--f-gold", "icons/card-6-overview.webp"]
 };
-const lookOf = (title) => CARD_LOOK[String(title).replace(/\s+/g, " ").trim()] || ["🐾", "--f-brown"];
+const OVERVIEW = "한눈에 보기!";
+const lookOf = (title) => CARD_LOOK[String(title).replace(/\s+/g, " ").trim()] || ["🐾", "--f-brown", ""];
 
 function buildCards() {
   const ul = $("#cards");
   ul.innerHTML = "";
   ul.classList.remove("shown", "dealt");
-  (move.cards || []).forEach((c, i) => {
-    const [emoji, frame] = lookOf(c.title);
+  const list = (move.cards || []).concat(move.cards && move.cards.length ? [{ title: OVERVIEW, all: true }] : []);
+  list.forEach((c, i) => {
+    const [emoji, frame, icon] = lookOf(c.title);
     const li = document.createElement("li");
     li.className = "card";
     li.style.cssText = `--i:${i};--frame:var(${frame})`;
@@ -596,9 +632,19 @@ function buildCards() {
       </span>
       <span class="yc-hint" aria-hidden="true">이 카드 보기!</span></button>`;
     li.querySelector(".yc-name").textContent = c.title;
-    li.querySelector(".yc-art").textContent = emoji;
+    const art = li.querySelector(".yc-art");
+    if (icon) { const im = document.createElement("img"); im.src = icon; im.alt = ""; im.onerror = () => { art.textContent = emoji; }; art.appendChild(im); }
+    else art.textContent = emoji;
     li.querySelector("button").setAttribute("aria-label", c.title + " 카드 열기");
-    li.querySelector("button").addEventListener("click", (e) => openCard(i, e.currentTarget));
+    const b = li.querySelector("button");
+    b.addEventListener("pointerdown", () => b.classList.add("press"));
+    b.addEventListener("pointerleave", () => b.classList.remove("press"));
+    b.addEventListener("pointercancel", () => b.classList.remove("press"));
+    b.addEventListener("click", (e) => {
+      b.classList.remove("press");
+      if (!reduce) b.animate([{ transform: "scale(.9)" }, { transform: "scale(1.12)" }, { transform: "scale(.97)" }, { transform: "scale(1)" }], { duration: 380, easing: "cubic-bezier(.34,1.56,.64,1)" });
+      setTimeout(() => openCard(i, b), reduce ? 0 : 200);
+    });
     ul.appendChild(li);
   });
 }
@@ -659,13 +705,33 @@ function dealCards() {
 let lastCardBtn = null;
 function openCard(i, btn) {
   if (!$("#cards").classList.contains("dealt")) return;
-  const c = move.cards[i], [emoji, frame] = lookOf(c.title);
+  const list = move.cards.concat([{ title: OVERVIEW, all: true }]);
+  const c = list[i], [emoji, frame, icon] = lookOf(c.title);
   const wrap = $("#cardwin"), win = wrap.querySelector(".cardwin");
   lastCardBtn = btn;
   win.style.setProperty("--frame", `var(${frame})`);
-  wrap.querySelector(".cw-emoji").textContent = emoji;
-  $("#cw-title").textContent = c.title;
-  fillRich($("#cw-text"), c.body);
+  const ic = wrap.querySelector(".cw-icon");
+  if (icon) { ic.hidden = false; ic.src = icon; wrap.querySelector(".cw-emoji").hidden = true; }
+  else { ic.hidden = true; const em = wrap.querySelector(".cw-emoji"); em.hidden = false; em.textContent = emoji; }
+  $("#cw-title").textContent = c.all ? "모두 한눈에 보기" : c.title;
+  const box = $("#cw-text");
+  box.textContent = "";
+  if (c.all) {
+    move.cards.forEach((sec) => {
+      const [, , ic2] = lookOf(sec.title);
+      const h = document.createElement("div");
+      h.className = "ov-head";
+      if (ic2) { const im = document.createElement("img"); im.src = ic2; im.alt = ""; h.appendChild(im); }
+      h.appendChild(document.createTextNode(sec.title));
+      const body = document.createElement("div");
+      fillRich(body, sec.body);
+      box.append(h, body);
+    });
+  } else {
+    const body = document.createElement("div");
+    fillRich(body, c.body);
+    box.appendChild(body);
+  }
   wrap.querySelector(".cw-body").scrollTop = 0;
   wrap.hidden = false;
   document.body.style.overflow = "hidden";
