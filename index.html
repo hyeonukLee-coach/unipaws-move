@@ -547,7 +547,7 @@ function enterVideo() {
     box.innerHTML = '<div class="no-video">영상은 곧 이 자리에 올라와요</div>';
   } else if (v.kind === "iframe") {
     const f = document.createElement("iframe");
-    f.src = v.src; f.title = move.name + " 영상"; f.allow = "autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen = true;
+    f.src = v.src; f.title = move.name + " 영상"; f.allow = "autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen = true; f.referrerPolicy = "strict-origin-when-cross-origin";
     box.classList.toggle("wide", v.wide);
     box.style.aspectRatio = "";
     box.appendChild(f);
