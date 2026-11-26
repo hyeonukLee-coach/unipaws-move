@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>유니포즈 운동 동작 한 가지</title>
+<meta name="description" content="망원동 유니포즈 코치가 보내 드리는 반려견 운동 동작 한 가지">
+<meta name="robots" content="noindex">
+<link rel="icon" href="logo-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* Hallmark · custom: Unipaws cream + level-up yellow · genre: playful · signature: yellow level-up wipe */
+/* critique: one idea per screen, warm and soft, motion carries the fun */
+:root {
+  --cream: #F5EFE5;
+  --cream-deep: #EDE3D3;
+  --beige: #D9C3A5;
+  --brown: #785941;
+  --brown-ink: #4E3A2A;
+  --blue: #6E8CA8;
+  --sun: #F7D46A;
+  --sun-deep: #F2C23E;
+  --white: #FFFDF9;
+  --shadow: rgba(78, 58, 42, 0.14);
+  --font: "Pretendard Variable", Pretendard, system-ui, -apple-system, sans-serif;
+  --ease-out: cubic-bezier(0.22, 0.8, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --radius: 24px;
+  --err: #B0533C;
+  --sun-glow: rgba(247, 212, 106, .75);
+  --sun-sheen: rgba(255, 236, 170, .55);
+  --sun-text-shadow: var(--sun-text-shadow);
+}
+html, body { background: var(--cream); }
+html, body { margin: 0; overflow-x: clip; min-height: 100%; }
+body {
+  font-family: var(--font);
+  color: var(--brown-ink);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+* { box-sizing: border-box; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; transition: none; }
+[hidden] { display: none !important; }
+
+/* ---------- floating paws (idle bob) ---------- */
+.float-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: clip; }
+.bit { position: absolute; color: var(--beige); }
+.bit svg { display: block; width: 100%; height: auto; animation: bob var(--d, 4s) var(--delay, 0s) ease-in-out infinite alternate; }
+.bit.blur { filter: blur(6px); opacity: .55; }
+@keyframes bob {
+  from { transform: translateY(-8px) rotate(calc(var(--r, 0deg) - 4deg)); }
+  to   { transform: translateY(8px)  rotate(calc(var(--r, 0deg) + 4deg)); }
+}
+
+/* ---------- layout ---------- */
+.screen { position: relative; z-index: 1; min-height: 100svh; display: grid; place-items: center; padding: 40px 20px 56px; }
+.wrap { width: 100%; max-width: 460px; margin: 0 auto; }
+.logo img { display: block; width: auto; height: 28px; }
+.logo { position: fixed; top: 12px; right: 16px; z-index: 5; padding: 4px 8px; border-radius: 12px; background: var(--cream); font-weight: 800; font-size: 15px; color: var(--brown); letter-spacing: -0.01em; text-decoration: none; }
+.giant {
+  position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+  font-weight: 900; font-size: clamp(96px, 30vw, 300px); line-height: 1; letter-spacing: -0.05em;
+  color: var(--white); white-space: nowrap; overflow: clip; z-index: 0;
+}
+.lede { font-size: 15px; color: var(--brown); margin: 0 0 8px; }
+h1, h2 { text-wrap: balance; margin: 0; letter-spacing: -0.03em; line-height: 1.25; color: var(--brown-ink); overflow-wrap: break-word; min-width: 0; }
+h1 { font-size: clamp(28px, 8vw, 40px); font-weight: 800; }
+h2 { font-size: clamp(24px, 6.5vw, 32px); font-weight: 800; }
+
+/* rise-in for content */
+.js .rise { opacity: 0; translate: 0 16px; }
+.js .in .rise { animation: rise .9s var(--ease-out) forwards; animation-delay: calc(var(--i, 0) * 110ms + 120ms); }
+@keyframes rise { to { opacity: 1; translate: 0 0; } }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: 0; cursor: pointer; border-radius: 999px; padding: 16px 28px;
+  font-weight: 800; font-size: 18px; letter-spacing: -0.01em;
+  background: var(--brown); color: var(--white); text-decoration: none;
+  box-shadow: 0 10px 24px var(--shadow);
+  transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out), background-color .2s;
+}
+.btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 30px var(--shadow); }
+.btn:active { transform: scale(.97); }
+.btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
+.btn.sun { background: var(--sun); color: var(--brown-ink); }
+.btn.wide { width: 100%; }
+
+/* ---------- 1. email gate ---------- */
+.gate-card {
+  position: relative; background: var(--white); border-radius: var(--radius);
+  padding: 28px 24px 24px; box-shadow: 0 18px 40px var(--shadow);
+}
+.field { display: block; margin: 20px 0 16px; }
+.field span { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.field input {
+  width: 100%; border: 2px solid var(--cream-deep); border-radius: 14px; background: var(--cream);
+  padding: 16px 16px; font-size: 17px; transition: border-color .2s;
+}
+.field input:focus { border-color: var(--blue); outline: none; }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; margin: 8px 0; cursor: pointer; }
+.check input { width: 20px; height: 20px; margin: 0px 0 0; accent-color: var(--brown); flex: none; }
+details.terms { font-size: 13px; color: var(--brown); margin: 0 0 16px 32px; }
+details.terms summary { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+details.terms ul { margin: 8px 0 0; padding-left: 16px; }
+.err { min-height: 22px; font-size: 14px; color: var(--err); margin: 4px 0 8px; }
+
+/* ---------- 2. preview ---------- */
+.preview-title {
+  font-weight: 900; font-size: clamp(52px, 17vw, 84px); line-height: 1; letter-spacing: -0.04em;
+  color: var(--brown); margin: 0 0 16px; display: flex; justify-content: center;
+}
+.js .preview-title .ch { display: inline-block; opacity: 0; transform: translateY(40px) scale(.6) rotate(-8deg); }
+.js .in .preview-title .ch { animation: pop .7s cubic-bezier(.34, 1.56, .64, 1) forwards; animation-delay: calc(var(--i) * 70ms + 150ms); }
+.preview-title .ch:last-child { color: var(--blue); }
+@keyframes pop { to { opacity: 1; transform: none; } }
+.move-name { text-align: center; font-size: 17px; font-weight: 700; color: var(--brown-ink); margin: 0 0 24px; }
+.center { text-align: center; }
+.reveal {
+  display: grid; grid-template-rows: 0fr; transition: grid-template-rows .8s var(--ease-io);
+}
+.reveal.open { grid-template-rows: 1fr; }
+.reveal > div { overflow: hidden; }
+.reveal-body {
+  margin-top: 24px; background: var(--white); border-radius: var(--radius);
+  padding: 24px 24px; box-shadow: 0 14px 32px var(--shadow); font-size: 17px;
+  clip-path: inset(0 0 100% 0 round var(--radius)); transition: clip-path .9s var(--ease-io) .1s;
+}
+.reveal.open .reveal-body { clip-path: inset(0 0 0 0 round var(--radius)); }
+.reveal-body p { margin: 0; white-space: pre-line; }
+.rich { white-space: normal; }
+.rich > span { display: block; }
+.rich .sub { font-weight: 800; color: var(--brown); margin: 12px 0 4px; }
+.rich .sub:first-child { margin-top: 0; }
+.rich .li { position: relative; padding-left: 16px; margin: 4px 0; }
+.rich .li::before { content: ""; position: absolute; left: 4px; top: 0.7em; width: 5px; height: 5px; border-radius: 50%; background: var(--beige); }
+.rich .li.arrow { padding-left: 32px; color: var(--brown); }
+.rich .li.arrow::before { left: 20px; background: var(--blue); }
+.rich .gap { height: 8px; }
+.js .next-wrap { margin-top: 24px; opacity: 0; transform: translateY(14px); transition: opacity .6s var(--ease-out) .7s, transform .6s var(--ease-out) .7s; }
+.js .reveal.open + .next-wrap { opacity: 1; transform: none; }
+
+/* ---------- 3. level-up wipe ---------- */
+.levelup { position: fixed; inset: 0; z-index: 50; pointer-events: none; display: grid; place-items: center; }
+.levelup .flood { position: absolute; inset: 0; background: var(--sun); clip-path: inset(0 0 0 100%); }
+.js .levelup .word {
+  position: relative; font-weight: 900; font-size: clamp(56px, 18vw, 150px); letter-spacing: -0.05em; color: var(--white);
+  opacity: 0; transform: scale(.7); text-shadow: 0 6px 24px var(--sun-text-shadow);
+}
+.levelup { grid-auto-flow: row; align-content: center; gap: 12px; justify-items: center; }
+.levelup .lv-icon { position: relative; width: 88px; height: auto; opacity: 0; }
+.spark { position: absolute; width: 14px; height: 14px; color: var(--white); opacity: 0; }
+
+/* ---------- 4. video + cards ---------- */
+.video-screen { align-items: start; padding-top: 64px; }
+.video-box {
+  position: relative; width: auto; height: 48svh; aspect-ratio: 9 / 16; max-width: 100%; margin: 0 auto;
+  border-radius: var(--radius); overflow: hidden; background: var(--brown-ink); box-shadow: 0 18px 40px var(--shadow);
+}
+.video-box.wide { width: 100%; height: auto; aspect-ratio: 16 / 9; }
+.video-box iframe, .video-box video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
+.no-video { position: absolute; inset: 0; display: grid; place-items: center; color: var(--cream); font-size: 15px; text-align: center; padding: 20px; }
+.cards { list-style: none; padding: 0; margin: 24px 0 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; perspective: 900px; }
+.js .card { opacity: 0; transform: translateY(30px) rotateX(-25deg); }
+.js .card.show { animation: cardIn 1.1s var(--ease-out) forwards; }
+@keyframes cardIn { to { opacity: 1; transform: none; } }
+.card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.card-btn {
+  position: relative; width: 100%; min-height: 96px; border: 0; cursor: pointer; text-align: left;
+  border-radius: 18px; padding: 16px; background: var(--white); box-shadow: 0 8px 20px var(--shadow);
+  transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out), background-color .3s;
+  transform-style: preserve-3d;
+}
+.card-num { display: block; font-size: 13px; font-weight: 800; color: var(--blue); }
+.card-title { display: block; font-size: 17px; font-weight: 800; margin-top: 0px; }
+.card-hint {
+  position: absolute; inset: 0; display: grid; place-items: center; border-radius: 18px;
+  background: var(--sun); color: var(--brown-ink); font-weight: 900; font-size: 18px;
+  opacity: 0; transform: rotateY(-90deg); transition: opacity .3s, transform .45s var(--ease-out);
+}
+@media (hover: hover) {
+  .card-btn:hover { transform: scale(1.08) rotate(-3deg); box-shadow: 0 16px 34px var(--shadow); z-index: 2; }
+  .card-btn:hover .card-hint { opacity: 1; transform: none; }
+}
+.card-btn:focus-visible .card-hint { opacity: 1; transform: none; }
+.card-btn[aria-expanded="true"] { background: var(--cream-deep); }
+
+.sheet {
+  margin-top: 16px; background: var(--white); border-radius: var(--radius); padding: 24px;
+  box-shadow: 0 14px 32px var(--shadow); transform-origin: top center;
+  animation: sheetIn .55s var(--ease-out);
+}
+@keyframes sheetIn { from { opacity: 0; transform: translateY(-10px) scale(.96); } to { opacity: 1; transform: none; } }
+.sheet h3 { margin: 0 0 8px; font-size: 19px; letter-spacing: -0.02em; }
+.sheet p { margin: 0; white-space: pre-line; font-size: 16px; }
+.sheet .close { margin-top: 16px; background: none; border: 0; padding: 8px 0; cursor: pointer; font-weight: 700; color: var(--brown); text-decoration: underline; text-underline-offset: 3px; }
+
+.more { margin: 32px 0 8px; }
+.btn.shine {
+  width: 100%; padding: 24px 28px; font-size: 21px; background: var(--brown); position: relative; overflow: hidden;
+  animation: breathe 2.4s ease-in-out infinite;
+}
+.btn.shine::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 35%, var(--sun-sheen) 50%, transparent 65%);
+  background-size: 250% 100%; background-position: 130% 0; animation: sheen 2.8s ease-in-out infinite;
+}
+@keyframes sheen { 0%, 35% { background-position: 130% 0; } 100% { background-position: -130% 0; } }
+@keyframes breathe { 50% { box-shadow: 0 10px 34px var(--sun-glow); } }
+.foot-icon { display: inline-block; width: 28px; height: auto; margin-bottom: 4px; }
+.foot { text-align: center; font-size: 13px; color: var(--brown); margin-top: 16px; }
+
+@media (min-width: 900px) {
+  .video-screen .wrap { max-width: 560px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .js .rise, .js .preview-title .ch, .js .card { opacity: 1; transform: none; translate: 0 0; }
+}
+</style>
+</head>
+<body>
+<noscript><p style="padding:24px">이 페이지는 자바스크립트를 켜야 볼 수 있어요.</p></noscript>
+
+<a class="logo" href="https://www.instagram.com/unipaws_training/" target="_blank" rel="noopener" aria-label="유니포즈 인스타그램">
+  <img src="logo.png" alt="unipaws" width="97" height="28" onerror="this.replaceWith(document.createTextNode('UNIPAWS'))">
+</a>
+<div class="float-layer" id="floats" aria-hidden="true"></div>
+
+<!-- 1. 이메일 -->
+<main id="s-gate" class="screen">
+  <div class="giant" aria-hidden="true">hello</div>
+  <div class="wrap">
+    <div class="gate-card">
+      <p class="lede rise" style="--i:0">망원동 유니포즈 코치가 보내 드리는</p>
+      <h1 class="rise" style="--i:1"><span id="gate-name">운동 동작 한 가지</span></h1>
+      <form id="gate-form" novalidate>
+        <label class="field rise" style="--i:2">
+          <span>이메일을 남겨 주시면 바로 열려요</span>
+          <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required>
+        </label>
+        <label class="check rise" style="--i:3">
+          <input id="agree" type="checkbox" required>
+          <span><b>(필수)</b> 개인정보 수집·이용에 동의해요</span>
+        </label>
+        <details class="terms rise" style="--i:3">
+          <summary>자세히 보기</summary>
+          <ul>
+            <li>모으는 것: 이메일 주소</li>
+            <li>쓰는 곳: 운동 자료 전달, 문의 답변</li>
+            <li>보관 기간: 동의를 거두실 때까지, 최대 1년</li>
+            <li>동의하지 않으셔도 되지만, 그러면 자료를 열 수 없어요</li>
+          </ul>
+        </details>
+        <label class="check rise" style="--i:4">
+          <input id="news" type="checkbox">
+          <span>(선택) 유니포즈 수업·코스 소식을 이메일로 받을게요</span>
+        </label>
+        <p class="err" id="gate-err" role="alert"></p>
+        <button class="btn wide rise" style="--i:5" id="gate-btn" type="submit">열어 보기</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<!-- 2. 미리보기 -->
+<main id="s-preview" class="screen" hidden>
+  <div class="wrap">
+    <p class="preview-title" aria-label="미리보기!"><span class="ch" style="--i:0">미</span><span class="ch" style="--i:1">리</span><span class="ch" style="--i:2">보</span><span class="ch" style="--i:3">기</span><span class="ch" style="--i:4">!</span></p>
+    <h2 class="move-name rise" style="--i:5" id="pv-name"></h2>
+    <div class="center rise" style="--i:6">
+      <button class="btn" id="pv-btn" type="button" aria-expanded="false" aria-controls="pv-reveal">미리보기!</button>
+    </div>
+    <div class="reveal" id="pv-reveal">
+      <div><div class="reveal-body"><p id="pv-text"></p></div></div>
+    </div>
+    <div class="next-wrap center">
+      <button class="btn sun wide" id="go-video" type="button" tabindex="-1">이제 영상으로 보기!</button>
+    </div>
+  </div>
+</main>
+
+<!-- 3. 레벨업 -->
+<div class="levelup" id="levelup" hidden aria-hidden="true">
+  <div class="flood"></div>
+  <img class="lv-icon" src="logo-icon.png" alt="" width="88" height="105" onerror="this.remove()">
+  <div class="word">레벨 업!</div>
+</div>
+
+<!-- 4. 영상 -->
+<main id="s-video" class="screen video-screen" hidden>
+  <div class="wrap">
+    <p class="lede rise" style="--i:0">오늘의 동작</p>
+    <h2 class="rise" style="--i:1" id="v-name"></h2>
+    <div class="video-box rise" style="--i:2; margin-top:16px" id="video-box"></div>
+    <ul class="cards" id="cards" aria-live="polite"></ul>
+    <div id="sheet-slot"></div>
+    <div class="more" id="more" hidden>
+      <a class="btn shine" id="more-link" href="#" target="_blank" rel="noopener">영상 더 보러 가기!</a>
+    </div>
+    <p class="foot"><img class="foot-icon" src="logo-icon.png" alt="" width="28" height="34" onerror="this.remove()"><br>Be Happy, Healthy, Harmonious with Unipaws</p>
+  </div>
+</main>
+
+<script>
+/* =========================================================
+   설정: 구글 앱스 스크립트 웹 앱 주소 (…/exec)
+   비워 두면 예시 데이터로 보여 줘요 (미리보기용).
+   ========================================================= */
+const API_URL = "https://script.google.com/macros/s/AKfycbxD579CAFzeSF6ECi6tSo320F83y8QwHhb3ALkcG9v-_ukPjzqwojq0UbSVzdH0CEFvCQ/exec";
+
+const DEMO = {
+  id: "sit-stand",
+  name: "앉았다 일어서기",
+  preview: "간식 하나로 뒷다리를 써 보는 동작이에요.\n집에서 매트 한 장만 있으면 바로 해볼 수 있어요.",
+  video: "",
+  cards: [
+    { title: "동작 설명", body: "뒷다리로 몸을 밀어 올리는 연습이에요." },
+    { title: "핸들링 방법", body: "간식을 코앞에 두고 '앉아'를 한 다음,\n간식을 살짝 위로 올려 천천히 일어서게 이끌어 주세요." },
+    { title: "단계", body: "1. 매트 위에서 앉아\n2. 간식을 올리며 천천히 일어서기\n3. 다시 앉아" },
+    { title: "주의사항", body: "미끄럽지 않은 매트 위에서 해요.\n고개를 돌리거나 자리를 뜨면 쉬어 가요.\n아프거나 불편해 보이면 수의사 선생님과 먼저 상담해 주세요." },
+    { title: "꿀팁", body: "빠르게보다 천천히가 포인트예요." }
+  ],
+  course: ""
+};
+
+const $ = (s) => document.querySelector(s);
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const params = new URLSearchParams(location.search);
+const moveId = (params.get("m") || "").replace(/[^a-zA-Z0-9_-]/g, "");
+const demoMode = !API_URL || params.get("demo") === "1"; // ?demo=1 이면 예시로 미리보기
+let move = null;
+
+/* ---------- floating paws ---------- */
+const PAW = '<svg viewBox="0 0 64 64" fill="currentColor"><ellipse cx="32" cy="42" rx="14" ry="12"/><ellipse cx="14" cy="26" rx="6" ry="8"/><ellipse cx="25" cy="16" rx="6" ry="8"/><ellipse cx="39" cy="16" rx="6" ry="8"/><ellipse cx="50" cy="26" rx="6" ry="8"/></svg>';
+const BONE = '<svg viewBox="0 0 80 32" fill="currentColor"><circle cx="10" cy="9" r="8"/><circle cx="10" cy="23" r="8"/><circle cx="70" cy="9" r="8"/><circle cx="70" cy="23" r="8"/><rect x="10" y="9" width="60" height="14" rx="7"/></svg>';
+const bits = [
+  [PAW, 6, 12, 46, -18, false], [BONE, 78, 9, 64, 22, false], [PAW, 84, 56, 40, 14, false],
+  [BONE, 4, 70, 58, -12, false], [PAW, -6, 88, 120, 10, true], [PAW, 86, -4, 110, -20, true]
+];
+const floats = $("#floats");
+bits.forEach(([svg, x, y, w, r, blur]) => {
+  const d = document.createElement("div");
+  d.className = "bit" + (blur ? " blur" : "");
+  d.style.cssText = `left:${x}%;top:${y}%;width:${w}px;--r:${r}deg;--d:${(3.2 + Math.random() * 1.8).toFixed(2)}s;--delay:${(-Math.random() * 4).toFixed(2)}s`;
+  d.innerHTML = svg;
+  floats.appendChild(d);
+});
+
+/* ---------- screens ---------- */
+function show(id) {
+  document.querySelectorAll("main.screen").forEach((m) => { m.hidden = m.id !== id; m.classList.remove("in"); });
+  const el = document.getElementById(id);
+  window.scrollTo(0, 0);
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("in")));
+}
+
+/* ---------- 1. email gate ---------- */
+async function loadName() {
+  if (demoMode) { $("#gate-name").textContent = DEMO.name; return; }
+  if (!moveId) { $("#gate-name").textContent = "링크를 다시 확인해 주세요"; $("#gate-btn").disabled = true; return; }
+  try {
+    const r = await fetch(`${API_URL}?m=${encodeURIComponent(moveId)}`);
+    const j = await r.json();
+    if (j.ok) $("#gate-name").textContent = j.name;
+    else { $("#gate-name").textContent = "지금은 열 수 없는 동작이에요"; $("#gate-btn").disabled = true; }
+  } catch (e) { /* 이름을 못 불러와도 이메일 입력은 할 수 있게 둔다 */ }
+}
+
+$("#gate-form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const email = $("#email").value.trim();
+  const err = $("#gate-err");
+  err.textContent = "";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = "이메일 주소를 한 번 더 확인해 주세요."; $("#email").focus(); return; }
+  if (!$("#agree").checked) { err.textContent = "필수 동의에 체크해 주시면 열 수 있어요."; return; }
+  const btn = $("#gate-btn");
+  btn.disabled = true; btn.textContent = "여는 중…";
+  try {
+    if (demoMode) { await new Promise((r) => setTimeout(r, 500)); move = DEMO; }
+    else {
+      const r = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ m: moveId, email, consent: true, news: $("#news").checked })
+      });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || "fail");
+      move = j.move;
+    }
+    startPreview();
+  } catch (e) {
+    err.textContent = "잠깐 연결이 어려워요. 조금 뒤에 다시 눌러 주세요.";
+    btn.disabled = false; btn.textContent = "열어 보기";
+  }
+});
+
+/* ---------- 2. preview ---------- */
+function startPreview() {
+  $("#pv-name").textContent = move.name;
+  $("#pv-text").textContent = move.preview || "";
+  show("s-preview");
+}
+$("#pv-btn").addEventListener("click", () => {
+  $("#pv-reveal").classList.add("open");
+  $("#pv-btn").setAttribute("aria-expanded", "true");
+  $("#go-video").tabIndex = 0;
+  setTimeout(() => $("#go-video").focus({ preventScroll: true }), 900);
+});
+
+/* ---------- 3. level up ---------- */
+// slow start, rush through the middle, soft settle
+const COVER = [[0,0],[.031,.006],[.134,.012],[.206,.023],[.278,.047],[.34,.07],[.412,.105],[.485,.158],[.546,.246],[.583,.55],[.62,.825],[.69,.9],[.79,.94],[.85,.956],[.93,.975],[1,1]];
+function cover(t) {
+  for (let i = 1; i < COVER.length; i++) {
+    const [t1, c1] = COVER[i], [t0, c0] = COVER[i - 1];
+    if (t <= t1) { const k = (t - t0) / (t1 - t0); return c0 + (c1 - c0) * (3 * k * k - 2 * k * k * k); }
+  }
+  return 1;
+}
+const STAR = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>';
+
+$("#go-video").addEventListener("click", () => {
+  const lv = $("#levelup"), flood = lv.querySelector(".flood"), word = lv.querySelector(".word");
+  lv.hidden = false;
+  if (reduce) { flood.style.clipPath = "none"; word.style.opacity = 1; word.style.transform = "none"; setTimeout(enterVideo, 500); return; }
+  const t0 = performance.now(), DUR = 900;
+  (function step(now) {
+    const t = Math.min(1, (now - t0) / DUR), c = cover(t);
+    flood.style.clipPath = `inset(0 0 0 ${(1 - c) * 100}%)`;
+    if (t < 1) requestAnimationFrame(step);
+    else burst();
+  })(t0);
+  function burst() {
+    const icon = lv.querySelector(".lv-icon");
+    if (icon) icon.animate([{ opacity: 0, transform: "translateY(24px) scale(.5) rotate(-12deg)" }, { opacity: 1, transform: "translateY(-6px) scale(1.1) rotate(6deg)" }, { opacity: 1, transform: "none" }],
+      { duration: 700, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "forwards" });
+    word.animate([{ opacity: 0, transform: "scale(.7)" }, { opacity: 1, transform: "scale(1.08)" }, { opacity: 1, transform: "scale(1)" }],
+      { duration: 650, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "forwards" });
+    for (let i = 0; i < 16; i++) {
+      const s = document.createElement("div");
+      s.className = "spark"; s.innerHTML = STAR;
+      const a = (i / 16) * Math.PI * 2, dist = 120 + Math.random() * 160, size = 10 + Math.random() * 18;
+      s.style.width = s.style.height = size + "px";
+      lv.appendChild(s);
+      s.animate([
+        { opacity: 0, transform: "translate(0,0) scale(.3) rotate(0deg)" },
+        { opacity: 1, offset: .3 },
+        { opacity: 0, transform: `translate(${Math.cos(a) * dist}px, ${Math.sin(a) * dist}px) scale(1) rotate(180deg)` }
+      ], { duration: 1000 + Math.random() * 300, easing: "cubic-bezier(.22,.8,.3,1)", fill: "forwards" }).onfinish = () => s.remove();
+    }
+    setTimeout(() => { enterVideo(); lv.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: "forwards" }).onfinish = () => {
+      lv.hidden = true; lv.getAnimations({ subtree: true }).forEach((x) => x.cancel()); word.getAnimations().forEach((x) => x.cancel()); flood.style.clipPath = ""; }; }, 1100);
+  }
+});
+
+/* ---------- 4. video + cards ---------- */
+function videoEmbed(url) {
+  if (!url) return null;
+  let m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{11})/);
+  if (m) return { kind: "iframe", src: `https://www.youtube-nocookie.com/embed/${m[1]}?playsinline=1&rel=0`, wide: !/shorts\//.test(url) };
+  // 비메오: vimeo.com/123, vimeo.com/123/해시(비공개 링크), player.vimeo.com/video/123?h=해시
+  m = url.match(/vimeo\.com\/(?:.*?\/)?(?:video\/)?(\d{6,})(?:\/([0-9a-f]{6,}))?/i);
+  if (m) {
+    const h = m[2] || (url.match(/[?&]h=([0-9a-f]+)/i) || [])[1];
+    return { kind: "iframe", vimeo: true, wide: true, page: url,
+      src: `https://player.vimeo.com/video/${m[1]}?${h ? "h=" + h + "&" : ""}playsinline=1&title=0&byline=0&portrait=0&dnt=1` };
+  }
+  m = url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+  if (m) return { kind: "iframe", src: `https://drive.google.com/file/d/${m[1]}/preview`, wide: false };
+  if (/^https:\/\/.+\.(mp4|webm|mov)(\?|$)/i.test(url)) return { kind: "video", src: url };
+  return null;
+}
+
+let cardsStarted = false;
+function enterVideo() {
+  $("#v-name").textContent = move.name;
+  const box = $("#video-box");
+  box.innerHTML = "";
+  const v = videoEmbed(move.video);
+  if (!v) {
+    box.innerHTML = '<div class="no-video">영상은 곧 이 자리에 올라와요</div>';
+  } else if (v.kind === "iframe") {
+    const f = document.createElement("iframe");
+    f.src = v.src; f.title = move.name + " 영상"; f.allow = "autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen = true;
+    box.classList.toggle("wide", v.wide);
+    box.style.aspectRatio = "";
+    box.appendChild(f);
+    if (v.vimeo) {
+      // 비메오 영상의 실제 가로·세로 비율에 맞춰 상자 모양을 바꿔요 (세로 영상이면 세로로)
+      fetch(`https://vimeo.com/api/oembed.json?url=${encodeURIComponent(v.page)}`)
+        .then((r) => r.json())
+        .then((o) => { if (o.width && o.height) { box.classList.toggle("wide", o.width >= o.height); box.style.aspectRatio = `${o.width} / ${o.height}`; } })
+        .catch(() => {});
+    }
+  } else {
+    const el = document.createElement("video");
+    el.src = v.src; el.controls = true; el.playsInline = true; el.preload = "metadata";
+    box.appendChild(el);
+  }
+  buildCards();
+  show("s-video");
+  if (!cardsStarted) { cardsStarted = true; setTimeout(dealCards, 1200); }
+}
+
+function buildCards() {
+  const ul = $("#cards");
+  ul.innerHTML = "";
+  (move.cards || []).forEach((c, i) => {
+    const li = document.createElement("li");
+    li.className = "card";
+    li.innerHTML = `<button class="card-btn" type="button" aria-expanded="false">
+      <span class="card-num">${String(i + 1).padStart(2, "0")}</span>
+      <span class="card-title"></span>
+      <span class="card-hint" aria-hidden="true">이 카드 보기!</span></button>`;
+    li.querySelector(".card-title").textContent = c.title;
+    li.querySelector("button").addEventListener("click", (e) => openSheet(i, e.currentTarget));
+    ul.appendChild(li);
+  });
+}
+
+// 3초 간격으로 카드가 한 장씩 천천히 등장
+function dealCards() {
+  const cards = [...document.querySelectorAll(".card")];
+  cards.forEach((c, i) => setTimeout(() => c.classList.add("show"), reduce ? 0 : i * 3000));
+  setTimeout(() => {
+    if (move.course) { $("#more-link").href = move.course; $("#more").hidden = false; }
+    else if (demoMode) { $("#more").hidden = false; } // 미리보기용: 코스 주소가 정해지면 시트에 넣어요
+  }, reduce ? 0 : cards.length * 3000);
+}
+
+// 시트 글을 보기 좋게: "■ 제목" → 작은 소제목, "• 항목"/"→ 항목" → 들여쓴 줄 (글자는 textContent로만 넣어요)
+function fillRich(el, text) {
+  el.textContent = "";
+  el.classList.add("rich");
+  String(text || "").split("\n").forEach((line) => {
+    const t = line.trim();
+    const row = document.createElement("span");
+    if (!t) { row.className = "gap"; }
+    else if (t.startsWith("■")) { row.className = "sub"; row.textContent = t.replace(/^■\s*/, ""); }
+    else if (/^[•\-]/.test(t)) { row.className = "li"; row.textContent = t.replace(/^[•\-]\s*/, ""); }
+    else if (t.startsWith("→")) { row.className = "li arrow"; row.textContent = t.replace(/^→\s*/, ""); }
+    else { row.className = "line"; row.textContent = t; }
+    el.appendChild(row);
+  });
+}
+
+function openSheet(i, btn) {
+  const slot = $("#sheet-slot");
+  const wasOpen = btn.getAttribute("aria-expanded") === "true";
+  document.querySelectorAll(".card-btn").forEach((b) => b.setAttribute("aria-expanded", "false"));
+  slot.innerHTML = "";
+  if (wasOpen) return;
+  btn.setAttribute("aria-expanded", "true");
+  const c = move.cards[i];
+  const s = document.createElement("section");
+  s.className = "sheet";
+  s.setAttribute("aria-label", c.title);
+  s.innerHTML = '<h3></h3><p></p><button class="close" type="button">접기</button>';
+  s.querySelector("h3").textContent = c.title;
+  fillRich(s.querySelector("p"), c.body);
+  s.querySelector(".close").addEventListener("click", () => { slot.innerHTML = ""; btn.setAttribute("aria-expanded", "false"); btn.focus(); });
+  slot.appendChild(s);
+  s.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
+}
+
+/* ---------- start ---------- */
+loadName();
+show("s-gate");
+</script>
+</body>
+</html>
