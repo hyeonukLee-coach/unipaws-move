@@ -276,13 +276,13 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 }
 .flash { position: absolute; inset: -20px; pointer-events: none; z-index: 3; border-radius: 32px; background: radial-gradient(circle, var(--beam), var(--beam-soft) 70%); opacity: 0; }
 
-/* card window: the card opened up */
-.cardwin-wrap { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 20px; perspective: 1200px; }
-.cardwin-backdrop { position: absolute; inset: 0; background: var(--backdrop); }
-.cardwin {
-  position: relative; width: 100%; max-width: 440px; max-height: 82svh; display: flex; flex-direction: column;
-  border-radius: 20px; padding: 12px; background: linear-gradient(160deg, var(--frame), var(--brown-ink) 170%);
-  box-shadow: 0 30px 60px var(--shadow); transform-origin: center;
+/* card panel: 카드 아래에서 촥! 펼쳐지는 내용 */
+.cardpanel-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .55s cubic-bezier(.65, 0, .35, 1); perspective: 1200px; }
+.cardpanel-wrap.open { grid-template-rows: 1fr; }
+.cardpanel-wrap > .cp-clip { overflow: hidden; min-height: 0; }
+.cardpanel {
+  margin-top: 20px; border-radius: 20px; padding: 12px; transform-origin: 50% 0;
+  background: linear-gradient(160deg, var(--frame), var(--brown-ink) 170%); box-shadow: 0 16px 36px var(--shadow);
 }
 .cw-top { display: flex; align-items: center; gap: 8px; background: var(--cream); border-radius: 12px; padding: 8px 8px 8px 12px; }
 .cw-emoji { font-size: 28px; line-height: 1; }
@@ -291,17 +291,15 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 .ov-head:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
 .ov-head img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
 .cw-top h3 { margin: 0; flex: 1; font-size: 20px; font-weight: 900; letter-spacing: -0.02em; color: var(--ink); }
-.cw-close { width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--white); cursor: pointer; display: grid; place-items: center; color: var(--ink); }
-.cw-close svg { width: 18px; height: 18px; }
-.cw-body {
-  margin-top: 8px; background: var(--white); border-radius: 12px; padding: 20px; overflow: auto; font-size: 16px;
-  border: 2px solid var(--beige);
-}
-.cw-body p, #cw-text { margin: 0; }
+.cw-close { min-height: 40px; padding: 0 12px; border: 0; border-radius: 999px; background: var(--white); cursor: pointer; display: flex; align-items: center; gap: 4px; color: var(--ink); font-weight: 800; font-size: 14px; }
+.cw-close svg { width: 16px; height: 16px; }
+.cw-body { margin-top: 8px; background: var(--white); border-radius: 12px; padding: 20px; font-size: 16px; border: 2px solid var(--beige); }
+#cw-text { margin: 0; }
+.cards.dealt .ycard[aria-expanded="true"] { transform: translateY(-6px) scale(1.04); }
+.cards.dealt .ycard[aria-expanded="true"] .face.front { box-shadow: 0 0 0 3px var(--gold), 0 12px 24px var(--gold-glow); }
 
-.more { margin: 88px 0 24px; position: relative; isolation: isolate; }
+.more { margin: 48px 0 24px; position: relative; isolation: isolate; }
 .cards-wrap { padding-top: 16px; }
-.foot { padding-bottom: 32svh; }
 .more .btn { z-index: 1; }
 .more::before {
   content: ""; position: absolute; inset: -48px -12px; z-index: -1; pointer-events: none;
@@ -423,22 +421,22 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
       <div class="beam" id="beam" aria-hidden="true"></div>
       <div class="flash" id="flash" aria-hidden="true"></div>
     </div>
+    <div class="cardpanel-wrap" id="cardpanel" hidden>
+      <div class="cp-clip">
+        <section class="cardpanel" aria-labelledby="cw-title">
+          <header class="cw-top"><img class="cw-icon" alt="" src="icons/card-1-explain.webp"><span class="cw-emoji" aria-hidden="true" hidden></span><h3 id="cw-title" tabindex="-1"></h3>
+            <button class="cw-close" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 15l6-6 6 6"/></svg>접기</button>
+          </header>
+          <div class="cw-body"><div id="cw-text"></div></div>
+        </section>
+      </div>
+    </div>
     <div class="more" id="more" hidden>
       <a class="btn shine" id="more-link" href="#" target="_blank" rel="noopener">영상 더 보러 가기!</a>
     </div>
     <p class="foot"><img class="foot-icon" src="logo-icon.png" alt="" width="28" height="34" onerror="this.remove()"><br>Be Happy, Healthy, Harmonious with Unipaws</p>
   </div>
 </main>
-
-<div class="cardwin-wrap" id="cardwin" hidden>
-  <div class="cardwin-backdrop" data-close></div>
-  <section class="cardwin" role="dialog" aria-modal="true" aria-labelledby="cw-title">
-    <header class="cw-top"><img class="cw-icon" alt="" src="icons/card-1-explain.webp"><span class="cw-emoji" aria-hidden="true" hidden></span><h3 id="cw-title"></h3>
-      <button class="cw-close" type="button" aria-label="닫기" data-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    </header>
-    <div class="cw-body"><div id="cw-text"></div></div>
-  </section>
-</div>
 
 <script>
 /* =========================================================
@@ -665,13 +663,14 @@ function buildCards() {
   const ul = $("#cards");
   ul.innerHTML = "";
   ul.classList.remove("shown", "dealt", "idle");
+  openIndex = -1; const cp = $("#cardpanel"); cp.hidden = true; cp.classList.remove("open");
   const list = (move.cards || []).concat(move.cards && move.cards.length ? [{ title: OVERVIEW, all: true }] : []);
   list.forEach((c, i) => {
     const [emoji, frame, icon] = lookOf(c.title);
     const li = document.createElement("li");
     li.className = "card";
     li.style.cssText = `--i:${i};--frame:var(${frame})`;
-    li.innerHTML = `<button class="ycard" type="button" aria-haspopup="dialog">
+    li.innerHTML = `<button class="ycard" type="button" aria-expanded="false" aria-controls="cardpanel">
       <span class="ycard-inner">
         <span class="face back"><img src="logo-icon.png" alt="" onerror="this.remove()"></span>
         <span class="face front">
@@ -760,15 +759,19 @@ function dealNow(ul, cards) {
   }, 1950);
 }
 
-// 카드를 누르면: 같은 테두리 색의 창으로 카드가 펼쳐져요
-let lastCardBtn = null;
+// 카드를 누르면: 카드 아래(영상 더 보러 가기 위)에서 내용이 촥! 펼쳐져요. 페이지를 그대로 스크롤해서 읽어요.
+let openIndex = -1;
 function openCard(i, btn) {
   if (!$("#cards").classList.contains("dealt")) return;
+  if (openIndex === i) return closeCard();
   const list = move.cards.concat([{ title: OVERVIEW, all: true }]);
   const c = list[i], [emoji, frame, icon] = lookOf(c.title);
-  const wrap = $("#cardwin"), win = wrap.querySelector(".cardwin");
-  lastCardBtn = btn;
-  win.style.setProperty("--frame", `var(${frame})`);
+  const wrap = $("#cardpanel"), panel = wrap.querySelector(".cardpanel");
+  const wasOpen = openIndex !== -1;
+  openIndex = i;
+  document.querySelectorAll(".ycard").forEach((b) => b.setAttribute("aria-expanded", "false"));
+  btn.setAttribute("aria-expanded", "true");
+  panel.style.setProperty("--frame", `var(${frame})`);
   const ic = wrap.querySelector(".cw-icon");
   if (icon) { ic.hidden = false; ic.src = icon; wrap.querySelector(".cw-emoji").hidden = true; }
   else { ic.hidden = true; const em = wrap.querySelector(".cw-emoji"); em.hidden = false; em.textContent = emoji; }
@@ -791,34 +794,43 @@ function openCard(i, btn) {
     fillRich(body, c.body);
     box.appendChild(body);
   }
-  wrap.querySelector(".cw-body").scrollTop = 0;
   wrap.hidden = false;
-  document.body.style.overflow = "hidden";
+  requestAnimationFrame(() => wrap.classList.add("open"));
   if (!reduce) {
-    const from = btn.getBoundingClientRect(), to = win.getBoundingClientRect();
-    const dx = (from.left + from.width / 2) - (to.left + to.width / 2), dy = (from.top + from.height / 2) - (to.top + to.height / 2);
-    const sc = from.width / to.width;
-    win.animate([
-      { transform: `translate(${dx}px, ${dy}px) scale(${sc}) rotateY(-70deg)`, opacity: .4 },
-      { transform: `translate(${dx * .2}px, ${dy * .2}px) scale(1.04) rotateY(8deg)`, opacity: 1, offset: .7 },
+    // 촥! 카드가 위에서부터 펼쳐지듯
+    panel.animate([
+      { transform: "rotateX(-80deg) scaleY(.5)", opacity: 0 },
+      { transform: "rotateX(10deg) scaleY(1.02)", opacity: 1, offset: .65 },
       { transform: "none", opacity: 1 }
-    ], { duration: 650, easing: "cubic-bezier(.22,.8,.3,1)" });
-    wrap.querySelector(".cardwin-backdrop").animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400 });
+    ], { duration: wasOpen ? 450 : 650, easing: "cubic-bezier(.22,.8,.3,1)" });
     wrap.querySelector(".cw-body").animate([{ clipPath: "inset(0 0 100% 0 round 12px)" }, { clipPath: "inset(0 0 0 0 round 12px)" }],
-      { duration: 600, delay: 300, easing: "cubic-bezier(.65,0,.35,1)", fill: "backwards" });
+      { duration: 650, delay: 200, easing: "cubic-bezier(.65,0,.35,1)", fill: "backwards" });
+    $("#flash").animate([{ opacity: 0 }, { opacity: .8 }, { opacity: 0 }], { duration: 400, easing: "ease-out" });
   }
-  wrap.querySelector(".cw-close").focus({ preventScroll: true });
+  // 펼쳐진 내용의 첫 줄이 영상 바로 아래 오도록 부드럽게 내려가기
+  setTimeout(() => {
+    const stick = document.querySelector(".video-stick").getBoundingClientRect().height;
+    const top = window.scrollY + wrap.getBoundingClientRect().top - stick - 8;
+    window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
+    $("#cw-title").focus({ preventScroll: true });
+  }, reduce ? 0 : 250);
 }
 function closeCard() {
-  const wrap = $("#cardwin");
+  const wrap = $("#cardpanel");
   if (wrap.hidden) return;
-  const done = () => { wrap.hidden = true; document.body.style.overflow = ""; if (lastCardBtn) lastCardBtn.focus({ preventScroll: true }); };
-  if (reduce) return done();
-  wrap.querySelector(".cardwin").animate([{ transform: "none", opacity: 1 }, { transform: "scale(.85) rotateY(30deg)", opacity: 0 }], { duration: 250, easing: "ease-in", fill: "forwards" })
-    .onfinish = (e) => { e.target.cancel(); };
-  wrap.querySelector(".cardwin-backdrop").animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250 }).onfinish = done;
+  const btn = document.querySelectorAll(".ycard")[openIndex];
+  openIndex = -1;
+  document.querySelectorAll(".ycard").forEach((b) => b.setAttribute("aria-expanded", "false"));
+  wrap.classList.remove("open");
+  setTimeout(() => { wrap.hidden = true; }, reduce ? 0 : 560);
+  if (btn) {
+    const stick = document.querySelector(".video-stick").getBoundingClientRect().height;
+    const top = window.scrollY + $("#cards-wrap").getBoundingClientRect().top - stick - 8;
+    window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
+    btn.focus({ preventScroll: true });
+  }
 }
-$("#cardwin").addEventListener("click", (e) => { if (e.target.closest("[data-close]")) closeCard(); });
+document.querySelector(".cw-close").addEventListener("click", closeCard);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeCard(); });
 
 // 시트 글을 보기 좋게: "■ 제목" → 작은 소제목, "• 항목"/"→ 항목" → 들여쓴 줄 (글자는 textContent로만 넣어요)
