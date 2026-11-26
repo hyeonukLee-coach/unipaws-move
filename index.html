@@ -29,6 +29,17 @@
   --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
   --radius: 24px;
   --err: #B0533C;
+  --ink: #1F1A17;
+  --green: #8FD08A;
+  --green-glow: rgba(143, 208, 138, .7);
+  --f-brown: #8A6446;
+  --f-blue: #6E8CA8;
+  --f-green: #7FA36B;
+  --f-orange: #D9822B;
+  --f-honey: #E0A526;
+  --beam: rgba(255, 248, 214, .95);
+  --beam-soft: rgba(255, 236, 170, 0);
+  --backdrop: rgba(31, 26, 23, .5);
   --sun-glow: rgba(247, 212, 106, .75);
   --sun-sheen: rgba(255, 236, 170, .55);
   --sun-text-shadow: var(--sun-text-shadow);
@@ -89,6 +100,7 @@ h2 { font-size: clamp(24px, 6.5vw, 32px); font-weight: 800; }
 .btn:active { transform: scale(.97); }
 .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
 .btn.sun { background: var(--sun); color: var(--brown-ink); }
+.btn.ink { background: var(--ink); color: var(--white); }
 .btn.wide { width: 100%; }
 
 /* ---------- 1. email gate ---------- */
@@ -112,12 +124,13 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 
 /* ---------- 2. preview ---------- */
 .preview-title {
-  font-weight: 900; font-size: clamp(52px, 17vw, 84px); line-height: 1; letter-spacing: -0.04em;
+  font-weight: 900; font-size: clamp(44px, 13vw, 76px); line-height: 1; letter-spacing: -0.04em;
   color: var(--brown); margin: 0 0 16px; display: flex; justify-content: center;
 }
 .js .preview-title .ch { display: inline-block; opacity: 0; transform: translateY(40px) scale(.6) rotate(-8deg); }
 .js .in .preview-title .ch { animation: pop .7s cubic-bezier(.34, 1.56, .64, 1) forwards; animation-delay: calc(var(--i) * 70ms + 150ms); }
 .preview-title .ch:last-child { color: var(--blue); }
+.preview-title .sp { width: 0.28em; }
 @keyframes pop { to { opacity: 1; transform: none; } }
 .move-name { text-align: center; font-size: 17px; font-weight: 700; color: var(--brown-ink); margin: 0 0 24px; }
 .center { text-align: center; }
@@ -165,44 +178,77 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 .video-box.wide { width: 100%; height: auto; aspect-ratio: 16 / 9; }
 .video-box iframe, .video-box video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
 .no-video { position: absolute; inset: 0; display: grid; place-items: center; color: var(--cream); font-size: 15px; text-align: center; padding: 20px; }
-.cards { list-style: none; padding: 0; margin: 24px 0 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; perspective: 900px; }
-.js .card { opacity: 0; transform: translateY(30px) rotateX(-25deg); }
-.js .card.show { animation: cardIn 1.1s var(--ease-out) forwards; }
-@keyframes cardIn { to { opacity: 1; transform: none; } }
-.card:last-child:nth-child(odd) { grid-column: 1 / -1; }
-.card-btn {
-  position: relative; width: 100%; min-height: 96px; border: 0; cursor: pointer; text-align: left;
-  border-radius: 18px; padding: 16px; background: var(--white); box-shadow: 0 8px 20px var(--shadow);
-  transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out), background-color .3s;
-  transform-style: preserve-3d;
+.cards-wrap { position: relative; margin-top: 24px; }
+.cards { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; perspective: 1000px; }
+.js .cards:not(.shown) .card { opacity: 0; }
+.card { position: relative; flex: 0 0 calc((100% - 24px) / 3); min-width: 0; }
+.ycard {
+  position: relative; display: block; width: 100%; aspect-ratio: 59 / 86; padding: 0; border: 0; background: none; cursor: pointer;
+  perspective: 800px; transition: transform .4s var(--ease-out); border-radius: 10px;
 }
-.card-num { display: block; font-size: 13px; font-weight: 800; color: var(--blue); }
-.card-title { display: block; font-size: 17px; font-weight: 800; margin-top: 0px; }
-.card-hint {
-  position: absolute; inset: 0; display: grid; place-items: center; border-radius: 18px;
-  background: var(--sun); color: var(--brown-ink); font-weight: 900; font-size: 18px;
-  opacity: 0; transform: rotateY(-90deg); transition: opacity .3s, transform .45s var(--ease-out);
+.ycard-inner { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.34, 1.3, .64, 1); transition-delay: calc(var(--i, 0) * 70ms + 120ms); }
+.js .cards:not(.dealt) .ycard-inner { transform: rotateY(180deg); }
+.face {
+  position: absolute; inset: 0; border-radius: 10px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  box-shadow: 0 10px 22px var(--shadow); overflow: hidden;
+}
+.face.back {
+  transform: rotateY(180deg); display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 45%, var(--f-brown), var(--brown-ink) 75%);
+  border: 4px solid var(--beige);
+}
+.face.back img { width: 46%; height: auto; opacity: .95; }
+.face.front {
+  display: grid; grid-template-rows: auto auto 1fr auto; gap: 4px; padding: 8px;
+  background: linear-gradient(160deg, var(--frame), var(--brown-ink) 160%); text-align: left;
+}
+.yc-name { display: block; background: var(--cream); border-radius: 4px; padding: 4px; font-size: 12px; font-weight: 900; color: var(--ink); letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.yc-stars { display: flex; justify-content: flex-end; color: var(--sun); font-size: 8px; line-height: 1; padding-right: 4px; }
+.yc-art {
+  display: grid; place-items: center; border-radius: 4px; border: 2px solid var(--beige);
+  background: radial-gradient(circle at 50% 40%, var(--white), var(--cream-deep));
+  font-size: clamp(28px, 9vw, 44px); line-height: 1;
+}
+.yc-text { display: block; background: var(--cream); border-radius: 4px; padding: 4px; font-size: 10px; font-weight: 700; color: var(--brown); text-align: center; }
+.js .yc-hint {
+  position: absolute; left: 8px; right: 8px; bottom: 8px; border-radius: 8px; padding: 4px 0; text-align: center;
+  background: var(--sun); color: var(--ink); font-weight: 900; font-size: 12px;
+  opacity: 0; transform: translateY(6px) rotate(-4deg); transition: opacity .25s, transform .35s var(--ease-out);
 }
 @media (hover: hover) {
-  .card-btn:hover { transform: scale(1.08) rotate(-3deg); box-shadow: 0 16px 34px var(--shadow); z-index: 2; }
-  .card-btn:hover .card-hint { opacity: 1; transform: none; }
+  .cards.dealt .ycard:hover { transform: scale(1.1) rotate(-4deg); z-index: 2; }
+  .cards.dealt .ycard:hover .yc-hint { opacity: 1; transform: none; }
 }
-.card-btn:focus-visible .card-hint { opacity: 1; transform: none; }
-.card-btn[aria-expanded="true"] { background: var(--cream-deep); }
+.ycard:focus-visible .yc-hint { opacity: 1; transform: none; }
+.beam {
+  position: absolute; left: 15%; width: 70%; height: 140%; top: -20%; pointer-events: none; z-index: 3;
+  background: linear-gradient(to top, var(--beam-soft), var(--beam) 50%, var(--beam-soft));
+  filter: blur(10px); mix-blend-mode: screen; opacity: 0; border-radius: 50%;
+}
+.flash { position: absolute; inset: -20px; pointer-events: none; z-index: 3; border-radius: 32px; background: radial-gradient(circle, var(--beam), var(--beam-soft) 70%); opacity: 0; }
 
-.sheet {
-  margin-top: 16px; background: var(--white); border-radius: var(--radius); padding: 24px;
-  box-shadow: 0 14px 32px var(--shadow); transform-origin: top center;
-  animation: sheetIn .55s var(--ease-out);
+/* card window: the card opened up */
+.cardwin-wrap { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 20px; perspective: 1200px; }
+.cardwin-backdrop { position: absolute; inset: 0; background: var(--backdrop); }
+.cardwin {
+  position: relative; width: 100%; max-width: 440px; max-height: 82svh; display: flex; flex-direction: column;
+  border-radius: 20px; padding: 12px; background: linear-gradient(160deg, var(--frame), var(--brown-ink) 170%);
+  box-shadow: 0 30px 60px var(--shadow); transform-origin: center;
 }
-@keyframes sheetIn { from { opacity: 0; transform: translateY(-10px) scale(.96); } to { opacity: 1; transform: none; } }
-.sheet h3 { margin: 0 0 8px; font-size: 19px; letter-spacing: -0.02em; }
-.sheet p { margin: 0; white-space: pre-line; font-size: 16px; }
-.sheet .close { margin-top: 16px; background: none; border: 0; padding: 8px 0; cursor: pointer; font-weight: 700; color: var(--brown); text-decoration: underline; text-underline-offset: 3px; }
+.cw-top { display: flex; align-items: center; gap: 8px; background: var(--cream); border-radius: 12px; padding: 8px 8px 8px 12px; }
+.cw-emoji { font-size: 28px; line-height: 1; }
+.cw-top h3 { margin: 0; flex: 1; font-size: 20px; font-weight: 900; letter-spacing: -0.02em; color: var(--ink); }
+.cw-close { width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--white); cursor: pointer; display: grid; place-items: center; color: var(--ink); }
+.cw-close svg { width: 18px; height: 18px; }
+.cw-body {
+  margin-top: 8px; background: var(--white); border-radius: 12px; padding: 20px; overflow: auto; font-size: 16px;
+  border: 2px solid var(--beige);
+}
+.cw-body p { margin: 0; }
 
 .more { margin: 32px 0 8px; }
 .btn.shine {
-  width: 100%; padding: 24px 28px; font-size: 21px; background: var(--brown); position: relative; overflow: hidden;
+  width: 100%; padding: 24px 28px; font-size: 21px; background: var(--green); color: var(--ink); position: relative; overflow: hidden;
   animation: breathe 2.4s ease-in-out infinite;
 }
 .btn.shine::after {
@@ -211,7 +257,7 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
   background-size: 250% 100%; background-position: 130% 0; animation: sheen 2.8s ease-in-out infinite;
 }
 @keyframes sheen { 0%, 35% { background-position: 130% 0; } 100% { background-position: -130% 0; } }
-@keyframes breathe { 50% { box-shadow: 0 10px 34px var(--sun-glow); } }
+@keyframes breathe { 50% { box-shadow: 0 10px 34px var(--green-glow); } }
 .foot-icon { display: inline-block; width: 28px; height: auto; margin-bottom: 4px; }
 .foot { text-align: center; font-size: 13px; color: var(--brown); margin-top: 16px; }
 
@@ -221,7 +267,7 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-  .js .rise, .js .preview-title .ch, .js .card { opacity: 1; transform: none; translate: 0 0; }
+  .js .rise, .js .preview-title .ch, .js .cards .card { opacity: 1; transform: none; translate: 0 0; }
 }
 </style>
 </head>
@@ -272,10 +318,10 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 <!-- 2. 미리보기 -->
 <main id="s-preview" class="screen" hidden>
   <div class="wrap">
-    <p class="preview-title" aria-label="미리보기!"><span class="ch" style="--i:0">미</span><span class="ch" style="--i:1">리</span><span class="ch" style="--i:2">보</span><span class="ch" style="--i:3">기</span><span class="ch" style="--i:4">!</span></p>
-    <h2 class="move-name rise" style="--i:5" id="pv-name"></h2>
-    <div class="center rise" style="--i:6">
-      <button class="btn" id="pv-btn" type="button" aria-expanded="false" aria-controls="pv-reveal">미리보기!</button>
+    <p class="preview-title" aria-label="오늘의 동작!"><span class="ch" style="--i:0">오</span><span class="ch" style="--i:1">늘</span><span class="ch" style="--i:2">의</span><span class="ch sp" style="--i:3"> </span><span class="ch" style="--i:4">동</span><span class="ch" style="--i:5">작</span><span class="ch" style="--i:6">!</span></p>
+    <h2 class="move-name rise" style="--i:7" id="pv-name"></h2>
+    <div class="center rise" style="--i:8">
+      <button class="btn ink" id="pv-btn" type="button" aria-expanded="false" aria-controls="pv-reveal">미리보기!</button>
     </div>
     <div class="reveal" id="pv-reveal">
       <div><div class="reveal-body"><p id="pv-text"></p></div></div>
@@ -299,14 +345,27 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
     <p class="lede rise" style="--i:0">오늘의 동작</p>
     <h2 class="rise" style="--i:1" id="v-name"></h2>
     <div class="video-box rise" style="--i:2; margin-top:16px" id="video-box"></div>
-    <ul class="cards" id="cards" aria-live="polite"></ul>
-    <div id="sheet-slot"></div>
+    <div class="cards-wrap" id="cards-wrap">
+      <ul class="cards" id="cards"></ul>
+      <div class="beam" id="beam" aria-hidden="true"></div>
+      <div class="flash" id="flash" aria-hidden="true"></div>
+    </div>
     <div class="more" id="more" hidden>
       <a class="btn shine" id="more-link" href="#" target="_blank" rel="noopener">영상 더 보러 가기!</a>
     </div>
     <p class="foot"><img class="foot-icon" src="logo-icon.png" alt="" width="28" height="34" onerror="this.remove()"><br>Be Happy, Healthy, Harmonious with Unipaws</p>
   </div>
 </main>
+
+<div class="cardwin-wrap" id="cardwin" hidden>
+  <div class="cardwin-backdrop" data-close></div>
+  <section class="cardwin" role="dialog" aria-modal="true" aria-labelledby="cw-title">
+    <header class="cw-top"><span class="cw-emoji" aria-hidden="true"></span><h3 id="cw-title"></h3>
+      <button class="cw-close" type="button" aria-label="닫기" data-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </header>
+    <div class="cw-body"><p id="cw-text"></p></div>
+  </section>
+</div>
 
 <script>
 /* =========================================================
@@ -509,31 +568,133 @@ function enterVideo() {
   if (!cardsStarted) { cardsStarted = true; setTimeout(dealCards, 1200); }
 }
 
+// 카드 모양: 제목마다 그림과 테두리 색
+const CARD_LOOK = {
+  "동작 설명": ["📖", "--f-brown"], "핸들링 방법": ["🖐️", "--f-blue"], "단계": ["🪜", "--f-green"],
+  "주의사항": ["⚠️", "--f-orange"], "꿀팁": ["🍯", "--f-honey"]
+};
+const lookOf = (title) => CARD_LOOK[String(title).replace(/\s+/g, " ").trim()] || ["🐾", "--f-brown"];
+
 function buildCards() {
   const ul = $("#cards");
   ul.innerHTML = "";
+  ul.classList.remove("shown", "dealt");
   (move.cards || []).forEach((c, i) => {
+    const [emoji, frame] = lookOf(c.title);
     const li = document.createElement("li");
     li.className = "card";
-    li.innerHTML = `<button class="card-btn" type="button" aria-expanded="false">
-      <span class="card-num">${String(i + 1).padStart(2, "0")}</span>
-      <span class="card-title"></span>
-      <span class="card-hint" aria-hidden="true">이 카드 보기!</span></button>`;
-    li.querySelector(".card-title").textContent = c.title;
-    li.querySelector("button").addEventListener("click", (e) => openSheet(i, e.currentTarget));
+    li.style.cssText = `--i:${i};--frame:var(${frame})`;
+    li.innerHTML = `<button class="ycard" type="button" aria-haspopup="dialog">
+      <span class="ycard-inner">
+        <span class="face back"><img src="logo-icon.png" alt="" onerror="this.remove()"></span>
+        <span class="face front">
+          <span class="yc-name"></span>
+          <span class="yc-stars" aria-hidden="true">★★★★</span>
+          <span class="yc-art" aria-hidden="true"></span>
+          <span class="yc-text">눌러서 펼쳐 보기</span>
+        </span>
+      </span>
+      <span class="yc-hint" aria-hidden="true">이 카드 보기!</span></button>`;
+    li.querySelector(".yc-name").textContent = c.title;
+    li.querySelector(".yc-art").textContent = emoji;
+    li.querySelector("button").setAttribute("aria-label", c.title + " 카드 열기");
+    li.querySelector("button").addEventListener("click", (e) => openCard(i, e.currentTarget));
     ul.appendChild(li);
   });
 }
 
-// 3초 간격으로 카드가 한 장씩 천천히 등장
-function dealCards() {
-  const cards = [...document.querySelectorAll(".card")];
-  cards.forEach((c, i) => setTimeout(() => c.classList.add("show"), reduce ? 0 : i * 3000));
-  setTimeout(() => {
-    if (move.course) { $("#more-link").href = move.course; $("#more").hidden = false; }
-    else if (demoMode) { $("#more").hidden = false; } // 미리보기용: 코스 주소가 정해지면 시트에 넣어요
-  }, reduce ? 0 : cards.length * 3000);
+function showMore() {
+  if (move.course) { $("#more-link").href = move.course; $("#more").hidden = false; }
+  else if (demoMode) { $("#more").hidden = false; } // 미리보기용: 코스 주소가 정해지면 시트에 넣어요
 }
+
+// 카드 등장: 부채처럼 펼침 → 아래에서 위로 빛 → 촥! 펼쳐지며 앞면
+function dealCards() {
+  const ul = $("#cards"), cards = [...ul.children];
+  if (!cards.length) return;
+  if (reduce) { ul.classList.add("shown", "dealt"); showMore(); return; }
+  const ur = ul.getBoundingClientRect(), cx = ur.left + ur.width / 2, cy = ur.top + ur.height / 2, n = cards.length;
+  const pos = cards.map((c, i) => {
+    const r = c.getBoundingClientRect();
+    return { dx: cx - (r.left + r.width / 2), dy: cy - (r.top + r.height / 2), a: (i - (n - 1) / 2) * 11 };
+  });
+  ul.classList.add("shown");
+  const EASE = "cubic-bezier(.22,.8,.3,1)";
+  cards.forEach((c, i) => {
+    const p = pos[i];
+    c.style.transformOrigin = "50% 110%";
+    c.animate([
+      { opacity: 0, transform: `translate(${p.dx}px, ${p.dy + 40}px) rotate(0deg) scale(.9)` },
+      { opacity: 1, transform: `translate(${p.dx}px, ${p.dy}px) rotate(${p.a}deg) scale(1)` }
+    ], { duration: 700, delay: i * 40, easing: EASE, fill: "both" });
+  });
+  // 빛이 아래에서 위로 쭉
+  const beam = $("#beam");
+  setTimeout(() => {
+    beam.animate([
+      { opacity: 0, transform: "translateY(55%) scaleY(.6)" },
+      { opacity: 1, offset: .25 },
+      { opacity: 1, offset: .8 },
+      { opacity: 0, transform: "translateY(-55%) scaleY(1)" }
+    ], { duration: 1100, easing: "cubic-bezier(.65,0,.35,1)", fill: "forwards" });
+    cards.forEach((c) => c.animate([{ filter: "brightness(1)" }, { filter: "brightness(1.35)" }, { filter: "brightness(1)" }], { duration: 1100, composite: "add" }));
+  }, 800);
+  // 촥!
+  setTimeout(() => {
+    $("#flash").animate([{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }], { duration: 500, easing: "ease-out" });
+    cards.forEach((c, i) => {
+      const p = pos[i];
+      c.getAnimations().forEach((x) => x.cancel());
+      c.animate([
+        { transform: `translate(${p.dx}px, ${p.dy}px) rotate(${p.a}deg) scale(1.06)` },
+        { transform: "none" }
+      ], { duration: 750, delay: i * 60, easing: "cubic-bezier(.34,1.45,.64,1)", fill: "backwards" });
+    });
+    ul.classList.add("dealt");
+    setTimeout(showMore, 900);
+  }, 1950);
+}
+
+// 카드를 누르면: 같은 테두리 색의 창으로 카드가 펼쳐져요
+let lastCardBtn = null;
+function openCard(i, btn) {
+  if (!$("#cards").classList.contains("dealt")) return;
+  const c = move.cards[i], [emoji, frame] = lookOf(c.title);
+  const wrap = $("#cardwin"), win = wrap.querySelector(".cardwin");
+  lastCardBtn = btn;
+  win.style.setProperty("--frame", `var(${frame})`);
+  wrap.querySelector(".cw-emoji").textContent = emoji;
+  $("#cw-title").textContent = c.title;
+  fillRich($("#cw-text"), c.body);
+  wrap.querySelector(".cw-body").scrollTop = 0;
+  wrap.hidden = false;
+  document.body.style.overflow = "hidden";
+  if (!reduce) {
+    const from = btn.getBoundingClientRect(), to = win.getBoundingClientRect();
+    const dx = (from.left + from.width / 2) - (to.left + to.width / 2), dy = (from.top + from.height / 2) - (to.top + to.height / 2);
+    const sc = from.width / to.width;
+    win.animate([
+      { transform: `translate(${dx}px, ${dy}px) scale(${sc}) rotateY(-70deg)`, opacity: .4 },
+      { transform: `translate(${dx * .2}px, ${dy * .2}px) scale(1.04) rotateY(8deg)`, opacity: 1, offset: .7 },
+      { transform: "none", opacity: 1 }
+    ], { duration: 650, easing: "cubic-bezier(.22,.8,.3,1)" });
+    wrap.querySelector(".cardwin-backdrop").animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400 });
+    wrap.querySelector(".cw-body").animate([{ clipPath: "inset(0 0 100% 0 round 12px)" }, { clipPath: "inset(0 0 0 0 round 12px)" }],
+      { duration: 600, delay: 300, easing: "cubic-bezier(.65,0,.35,1)", fill: "backwards" });
+  }
+  wrap.querySelector(".cw-close").focus({ preventScroll: true });
+}
+function closeCard() {
+  const wrap = $("#cardwin");
+  if (wrap.hidden) return;
+  const done = () => { wrap.hidden = true; document.body.style.overflow = ""; if (lastCardBtn) lastCardBtn.focus({ preventScroll: true }); };
+  if (reduce) return done();
+  wrap.querySelector(".cardwin").animate([{ transform: "none", opacity: 1 }, { transform: "scale(.85) rotateY(30deg)", opacity: 0 }], { duration: 250, easing: "ease-in", fill: "forwards" })
+    .onfinish = (e) => { e.target.cancel(); };
+  wrap.querySelector(".cardwin-backdrop").animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250 }).onfinish = done;
+}
+$("#cardwin").addEventListener("click", (e) => { if (e.target.closest("[data-close]")) closeCard(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeCard(); });
 
 // 시트 글을 보기 좋게: "■ 제목" → 작은 소제목, "• 항목"/"→ 항목" → 들여쓴 줄 (글자는 textContent로만 넣어요)
 function fillRich(el, text) {
@@ -549,25 +710,6 @@ function fillRich(el, text) {
     else { row.className = "line"; row.textContent = t; }
     el.appendChild(row);
   });
-}
-
-function openSheet(i, btn) {
-  const slot = $("#sheet-slot");
-  const wasOpen = btn.getAttribute("aria-expanded") === "true";
-  document.querySelectorAll(".card-btn").forEach((b) => b.setAttribute("aria-expanded", "false"));
-  slot.innerHTML = "";
-  if (wasOpen) return;
-  btn.setAttribute("aria-expanded", "true");
-  const c = move.cards[i];
-  const s = document.createElement("section");
-  s.className = "sheet";
-  s.setAttribute("aria-label", c.title);
-  s.innerHTML = '<h3></h3><p></p><button class="close" type="button">접기</button>';
-  s.querySelector("h3").textContent = c.title;
-  fillRich(s.querySelector("p"), c.body);
-  s.querySelector(".close").addEventListener("click", () => { slot.innerHTML = ""; btn.setAttribute("aria-expanded", "false"); btn.focus(); });
-  slot.appendChild(s);
-  s.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
 }
 
 /* ---------- start ---------- */
