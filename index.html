@@ -36,6 +36,8 @@
   --gold-glow: rgba(232, 190, 90, .5);
   --f-gold: #C9A227;
   --halo: rgba(255, 226, 140, .55);
+  --ray: rgba(255, 255, 255, .85);
+  --ray-gold: rgba(255, 236, 170, .9);
   --halo-core: rgba(190, 232, 160, .85);
   --green: #8FD08A;
   --green-glow: rgba(143, 208, 138, .7);
@@ -181,7 +183,22 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 }
 .levelup { grid-auto-flow: row; align-content: center; gap: 12px; justify-items: center; }
 .levelup .lv-icon { position: relative; width: 88px; height: auto; opacity: 0; }
-.spark { position: absolute; width: 14px; height: 14px; color: var(--white); opacity: 0; }
+.spark { position: absolute; width: 14px; height: 14px; color: var(--white); opacity: 0; z-index: 2; }
+.spark.gold { color: var(--gold-hi); }
+.levelup .rays {
+  position: absolute; left: 50%; top: 50%; width: 170vmax; aspect-ratio: 1; translate: -50% -50%; opacity: 0;
+  background: repeating-conic-gradient(from 0deg, var(--ray) 0deg 5deg, transparent 5deg 15deg);
+  -webkit-mask: radial-gradient(closest-side, var(--ink) 4%, transparent 62%); mask: radial-gradient(closest-side, var(--ink) 4%, transparent 62%);
+}
+.levelup .pillar {
+  position: absolute; left: 50%; bottom: 0; width: min(56vw, 300px); height: 100%; translate: -50% 0; opacity: 0;
+  background: linear-gradient(to top, var(--white) 0%, var(--ray-gold) 45%, transparent 100%);
+  filter: blur(8px); transform-origin: 50% 100%;
+}
+.levelup .core { position: absolute; left: 50%; top: 50%; width: 60vmin; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; opacity: 0; background: radial-gradient(closest-side, var(--white), var(--ray-gold) 40%, transparent); }
+.levelup .ring { position: absolute; left: 50%; top: 50%; width: 30vmin; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; border: 6px solid var(--white); opacity: 0; }
+.levelup .lv-icon, .levelup .word, .levelup .lv-sub { z-index: 3; }
+.js .levelup .lv-sub { position: relative; font-weight: 800; font-size: clamp(16px, 4.6vw, 22px); color: var(--brown-ink); opacity: 0; background: var(--ray); padding: 4px 16px; border-radius: 999px; }
 
 /* ---------- 4. video + cards ---------- */
 .video-screen { align-items: start; padding-top: 64px; }
@@ -220,7 +237,7 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 .yc-stars { display: flex; justify-content: flex-end; color: var(--sun); font-size: 8px; line-height: 1; padding-right: 4px; }
 .yc-art {
   display: grid; place-items: center; border-radius: 4px; border: 2px solid var(--beige);
-  background: var(--brown-ink); overflow: hidden;
+  background: var(--white); overflow: hidden;
   font-size: clamp(28px, 9vw, 44px); line-height: 1;
 }
 .yc-text { display: block; background: var(--cream); border-radius: 4px; padding: 4px; font-size: 10px; font-weight: 700; color: var(--brown); text-align: center; }
@@ -235,7 +252,16 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 }
 .ycard:focus-visible .yc-hint { opacity: 1; transform: none; }
 .cards.dealt .ycard.press { transform: scale(.9); transition-duration: .1s; }
-.yc-art img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+.cards.idle .card { transform-origin: 50% 0; animation: jingle 2s ease-in-out infinite; animation-delay: calc(var(--i) * 140ms); }
+@keyframes jingle {
+  0%, 62% { transform: none; }
+  70% { transform: translateY(-3px) rotate(-2.2deg); }
+  78% { transform: translateY(-3px) rotate(2deg); }
+  85% { transform: translateY(-2px) rotate(-1.4deg); }
+  92% { transform: translateY(-1px) rotate(.8deg); }
+  100% { transform: none; }
+}
+.yc-art img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 2px; }
 .beam {
   position: absolute; left: 15%; width: 70%; height: 140%; top: -20%; pointer-events: none; z-index: 3;
   background: linear-gradient(to top, var(--beam-soft), var(--beam) 50%, var(--beam-soft));
@@ -368,8 +394,13 @@ details.terms ul { margin: 8px 0 0; padding-left: 16px; }
 <!-- 3. 레벨업 -->
 <div class="levelup" id="levelup" hidden aria-hidden="true">
   <div class="flood"></div>
+  <div class="rays"></div>
+  <div class="pillar"></div>
+  <div class="core"></div>
+  <div class="ring"></div>
   <img class="lv-icon" src="logo-icon.png" alt="" width="88" height="105" onerror="this.remove()">
   <div class="word">레벨 업!</div>
+  <div class="lv-sub">오늘의 동작이 열렸어요!</div>
 </div>
 
 <!-- 4. 영상 -->
@@ -522,7 +553,7 @@ $("#go-video").addEventListener("click", () => {
   const lv = $("#levelup"), flood = lv.querySelector(".flood"), word = lv.querySelector(".word");
   lv.hidden = false;
   if (reduce) { flood.style.clipPath = "none"; word.style.opacity = 1; word.style.transform = "none"; setTimeout(enterVideo, 500); return; }
-  const t0 = performance.now(), DUR = 900;
+  const t0 = performance.now(), DUR = 650;
   (function step(now) {
     const t = Math.min(1, (now - t0) / DUR), c = cover(t);
     flood.style.clipPath = `inset(0 0 0 ${(1 - c) * 100}%)`;
@@ -530,25 +561,33 @@ $("#go-video").addEventListener("click", () => {
     else burst();
   })(t0);
   function burst() {
+    const q = (sel) => lv.querySelector(sel);
+    const EO = "cubic-bezier(.22,.8,.3,1)";
+    q(".core").animate([{ opacity: 0, transform: "scale(.2)" }, { opacity: 1, transform: "scale(1.2)", offset: .25 }, { opacity: 0, transform: "scale(1.8)" }], { duration: 700, easing: EO, fill: "forwards" });
+    q(".ring").animate([{ opacity: .9, transform: "scale(.3)" }, { opacity: 0, transform: "scale(4)" }], { duration: 700, easing: EO, fill: "forwards" });
+    q(".rays").animate([{ opacity: 0, transform: "scale(.4) rotate(0deg)" }, { opacity: .9, transform: "scale(1) rotate(25deg)", offset: .3 }, { opacity: .6, transform: "scale(1.05) rotate(70deg)" }], { duration: 1300, easing: "ease-out", fill: "forwards" });
+    q(".pillar").animate([{ opacity: 0, transform: "scaleY(0)" }, { opacity: 1, transform: "scaleY(1)", offset: .35 }, { opacity: .5, transform: "scaleY(1.05)" }], { duration: 1000, easing: EO, fill: "forwards" });
+    const sub = q(".lv-sub");
+    if (sub) sub.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 400, delay: 250, easing: EO, fill: "forwards" });
     const icon = lv.querySelector(".lv-icon");
     if (icon) icon.animate([{ opacity: 0, transform: "translateY(24px) scale(.5) rotate(-12deg)" }, { opacity: 1, transform: "translateY(-6px) scale(1.1) rotate(6deg)" }, { opacity: 1, transform: "none" }],
       { duration: 700, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "forwards" });
     word.animate([{ opacity: 0, transform: "scale(.7)" }, { opacity: 1, transform: "scale(1.08)" }, { opacity: 1, transform: "scale(1)" }],
       { duration: 650, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "forwards" });
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 30; i++) {
       const s = document.createElement("div");
-      s.className = "spark"; s.innerHTML = STAR;
-      const a = (i / 16) * Math.PI * 2, dist = 120 + Math.random() * 160, size = 10 + Math.random() * 18;
+      s.className = "spark" + (i % 3 ? "" : " gold"); s.innerHTML = STAR;
+      const a = (i / 30) * Math.PI * 2 + Math.random() * .2, dist = 110 + Math.random() * 240, size = 8 + Math.random() * 22;
       s.style.width = s.style.height = size + "px";
       lv.appendChild(s);
       s.animate([
         { opacity: 0, transform: "translate(0,0) scale(.3) rotate(0deg)" },
         { opacity: 1, offset: .3 },
         { opacity: 0, transform: `translate(${Math.cos(a) * dist}px, ${Math.sin(a) * dist}px) scale(1) rotate(180deg)` }
-      ], { duration: 1000 + Math.random() * 300, easing: "cubic-bezier(.22,.8,.3,1)", fill: "forwards" }).onfinish = () => s.remove();
+      ], { duration: 800 + Math.random() * 300, easing: "cubic-bezier(.22,.8,.3,1)", fill: "forwards" }).onfinish = () => s.remove();
     }
-    setTimeout(() => { enterVideo(); lv.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: "forwards" }).onfinish = () => {
-      lv.hidden = true; lv.getAnimations({ subtree: true }).forEach((x) => x.cancel()); word.getAnimations().forEach((x) => x.cancel()); flood.style.clipPath = ""; }; }, 1100);
+    setTimeout(() => { enterVideo(); lv.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: "forwards" }).onfinish = () => {
+      lv.hidden = true; lv.getAnimations({ subtree: true }).forEach((x) => x.cancel()); word.getAnimations().forEach((x) => x.cancel()); flood.style.clipPath = ""; }; }, 1000);
   }
 });
 
@@ -613,7 +652,7 @@ const lookOf = (title) => CARD_LOOK[String(title).replace(/\s+/g, " ").trim()] |
 function buildCards() {
   const ul = $("#cards");
   ul.innerHTML = "";
-  ul.classList.remove("shown", "dealt");
+  ul.classList.remove("shown", "dealt", "idle");
   const list = (move.cards || []).concat(move.cards && move.cards.length ? [{ title: OVERVIEW, all: true }] : []);
   list.forEach((c, i) => {
     const [emoji, frame, icon] = lookOf(c.title);
@@ -698,6 +737,7 @@ function dealCards() {
     });
     ul.classList.add("dealt");
     setTimeout(showMore, 900);
+    setTimeout(() => { cards.forEach((c) => { c.style.transformOrigin = ""; }); ul.classList.add("idle"); }, 1200);
   }, 1950);
 }
 
